@@ -4,7 +4,9 @@ var userModel = require("../model/user.model")
 module.exports ={
 addUser: addUser,
 listUser : listUser,
-deleteUser : deleteUser
+deleteUser : deleteUser,
+findUser : findUser,
+updateUser : updateUser
 }
 
 function addUser(req,res){
@@ -46,15 +48,54 @@ function listUser(req,res){
 
 function deleteUser(req, res){
     console.log("res",req.body)
-    var test = req.body.xyz;
-    userModel.findOneAndRemove({ name:test },function(err,response){
-        if(err)
+    var userId = req.body.userId;
+    userModel.findOneAndRemove({ _id:userId },function(err,response){
+        if(!response)
         {
             res.json({code:501, message:"no data present"})
         }
         else{
             console.log("test1",response)
             res.json({code: 200,message: "success",data: response})
+        }
+    })
+}
+
+function findUser(req,res){
+    var test = req.body.name;
+    userModel.findOne({name: test},function(err,response){
+        if(err){
+            res.json({code:501, message: "unsuccessfull", data: err})
+        }
+        else{
+            res.json({code:200, message: "successfull", data: response})
+        }
+    })
+
+
+}
+
+function updateUser(req,res){
+    var test = req.body.name;
+    userModel.findOne({name: test},function(err,response){
+        if(!response){
+            console.log("1")
+            res.json({code:501, message: "No such name found", data: err})
+        }
+        else{
+            console.log("2",response)
+            const nameObj = new userModel({
+                name : req.body.name
+            })
+            nameObj.update(nameObj,function(error,response){
+                if(error){
+                    res.json({code:501, message: "No saved", data: error})
+                }
+                else{
+                    res.json({code:200, message: "successfull", data: response})
+                }
+            })
+           
         }
     })
 }
