@@ -78,7 +78,7 @@ function findUser(req, res) {
 }
 
 function updateUser(req, res) {
-    console.log("req", req.params)
+    console.log("req.params", req.params)
     var test = req.params.name;
 
     const userObj = {
